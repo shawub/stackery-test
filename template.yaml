@@ -14,46 +14,9 @@ Resources:
         paths:
           /:
             get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getEvent.Arn}/invocations
               responses: {}
       EndpointConfiguration: REGIONAL
       TracingEnabled: true
-  getEvent:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${AWS::StackName}-getEvent
-      Description: !Sub
-        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
-        - ResourceName: getEvent
-      CodeUri: src/getEvent
-      Handler: index.handler
-      Runtime: nodejs10.x
-      MemorySize: 3008
-      Timeout: 30
-      Tracing: Active
-      Policies:
-        - AWSXrayWriteOnlyAccess
-        - SQSSendMessagePolicy:
-            QueueName: !GetAtt queuedJobs.QueueName
-      Events:
-        testApiGET:
-          Type: Api
-          Properties:
-            Path: /
-            Method: GET
-            RestApiId: !Ref testApi
-      Environment:
-        Variables:
-          QUEUE_NAME: !GetAtt queuedJobs.QueueName
-          QUEUE_ARN: !GetAtt queuedJobs.Arn
-          QUEUE_URL: !Ref queuedJobs
-  queuedJobs:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub ${AWS::StackName}-queuedJobs
 Parameters:
   StackTagName:
     Type: String
