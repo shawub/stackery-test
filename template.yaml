@@ -19,6 +19,9 @@ Resources:
                 type: aws_proxy
                 uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${testFunction.Arn}/invocations
               responses: {}
+          /test:
+            put:
+              responses: {}
       EndpointConfiguration: REGIONAL
       TracingEnabled: true
   testFunction:
